@@ -18,7 +18,7 @@ const Stack = createStackNavigator();
 //Drawer Navigator for main screens
 function DrawerNavigator () {
   return (
-    <Drawer.Navigator screenOptions={{headerShown: false,}}>
+    <Drawer.Navigator screenOptions={{headerShown: true,}}>
     <Drawer.Screen name="Home" component={HomeScreen} />
     <Drawer.Screen name="Categories" component={CategoriesScreen} />
     <Drawer.Screen name="Search" component={SearchScreen} />
