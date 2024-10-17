@@ -4,6 +4,11 @@ import { DrawerContentScrollView } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 export default function CustomDrawerContent(props) {
+  const { isDarkTheme } = props;
+
+   // Define colors based on the theme
+   const textColor = isDarkTheme ? '#FFFFFF' : '#333';
+
   return (
     <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
       <View style={styles.menuContainer}>
@@ -17,7 +22,7 @@ export default function CustomDrawerContent(props) {
           onPress={() => props.navigation.navigate('Home')}
         >
           <Icon name="home-outline" size={22} color="#4CAF50" />
-          <Text style={styles.drawerLabel}>Home</Text>
+          <Text style={[styles.drawerLabel, { color: textColor }]}>Home</Text>
         </TouchableOpacity>
 
         {/* Categories */}
@@ -26,7 +31,7 @@ export default function CustomDrawerContent(props) {
           onPress={() => props.navigation.navigate('Categories')}
         >
           <Icon name="list-outline" size={22} color="#4CAF50" />
-          <Text style={styles.drawerLabel}>Categories</Text>
+          <Text style={[styles.drawerLabel, { color: textColor }]}>Categories</Text>
         </TouchableOpacity>
 
         {/* Search */}
@@ -35,8 +40,18 @@ export default function CustomDrawerContent(props) {
           onPress={() => props.navigation.navigate('Search')}
         >
           <Icon name="search-outline" size={22} color="#4CAF50" />
-          <Text style={styles.drawerLabel}>Search</Text>
+          <Text style={[styles.drawerLabel, { color: textColor }]}>Search</Text>
         </TouchableOpacity>
+
+        {/* Settings */}
+        <TouchableOpacity
+          style={styles.drawerItem}
+          onPress={() => props.navigation.navigate('Settings')}
+        >
+          <Icon name="settings-outline" size={22} color="#4CAF50" />
+          <Text style={[styles.drawerLabel, { color: textColor }]}>Settings</Text>
+        </TouchableOpacity>
+
       </View>
     </DrawerContentScrollView>
   );
@@ -60,7 +75,6 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
   },
   closeButton:{
     flexDirection: 'row',

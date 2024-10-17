@@ -1,14 +1,18 @@
 import React from 'react';
 import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { getThemeColors } from '../components/Theme'; 
 
-const SearchScreen = () => {
+const SearchScreen = ({ isDarkTheme }) => {
+  const { backgroundColor, textColor, subtitleColor } = getThemeColors(isDarkTheme);
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <TextInput
-        style={styles.input}
+        style={[styles.input, { color: textColor, borderColor: subtitleColor }]}
         placeholder="Search..."
+        placeholderTextColor={subtitleColor}
       />
-      <Text style={styles.title}>Search Results</Text>
+      <Text style={[styles.title, { color: textColor }]}>Search Results</Text>
       {/* Display search results here */}
     </View>
   );
@@ -21,7 +25,6 @@ const styles = StyleSheet.create({
   },
   input: {
     height: 40,
-    borderColor: '#ccc',
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
