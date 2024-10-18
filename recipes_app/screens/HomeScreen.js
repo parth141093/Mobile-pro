@@ -1,8 +1,8 @@
 import React from 'react';
-
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native';
 import LottieView from 'lottie-react-native';  // Import Lottie
 
+const HomeScreen = ({ navigation }) => {
   return (
     <View style={{ flex: 1, marginTop: 0 }}>
       {/* StatusBar configuration to remove extra space */}
@@ -45,7 +45,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingHorizontal: 20,
-
     paddingTop: 0,  // Ensure no padding at the top
     backgroundColor: '#f5f5f5',
     flexGrow: 1,    // Ensure the ScrollView takes up full space
@@ -60,14 +59,18 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
+    color: '#333',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
+    color: '#555',
     marginBottom: 20,
     textAlign: 'center',
   },
+
   button: {
+    backgroundColor: '#4CAF50',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,
@@ -76,6 +79,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
+    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
