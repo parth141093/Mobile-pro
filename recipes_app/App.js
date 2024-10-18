@@ -12,7 +12,7 @@ import RecipesListScreen from './screens/RecipesListScreen'; // Import RecipesLi
 import CustomDrawerContent from './components/CustomDrawerContent'; // Import your custom drawer component
 import SettingsScreen from './screens/SettingsScreen';
 import {enableScreens} from 'react-native-screens';
-import {TouchableOpacity, useColorScheme,StatusBar} from 'react-native';
+import {TouchableOpacity, useColorScheme, StatusBar} from 'react-native';
 import {navigation} from '@react-navigation/native';
 
 enableScreens();
@@ -74,7 +74,6 @@ function DrawerNavigator({toggleTheme, isDarkTheme}) {
       </Drawer.Screen>
       <Drawer.Screen
         name="Categories"
-        component={CategoriesScreen}
         options={({navigation}) => ({
           title: 'Categories',
           // Added a button to navigate back to the Home screen from the Categories screen
@@ -88,8 +87,37 @@ function DrawerNavigator({toggleTheme, isDarkTheme}) {
               />
             </TouchableOpacity>
           ),
+        })}>
+        {props => (
+          <CategoriesScreen
+            {...props}
+            isDarkTheme={isDarkTheme} // Pass the dark mode state here
+          />
+        )}
+      </Drawer.Screen>
+      <Drawer.Screen
+        name="RecipesList"
+        options={({navigation}) => ({
+          title: 'Recipes List',
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Icon
+                name="arrow-back-outline"
+                size={25}
+                color="#4CAF50"
+                style={{marginLeft: 15}}
+              />
+            </TouchableOpacity>
+          ),
         })}
-      />
+      >
+      {props => (
+          <RecipesListScreen
+            {...props}
+            isDarkTheme={isDarkTheme} // Pass the dark mode state here
+          />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen
         name="Search"
         options={({navigation}) => ({
@@ -105,8 +133,7 @@ function DrawerNavigator({toggleTheme, isDarkTheme}) {
               />
             </TouchableOpacity>
           ),
-        })}
-        >
+        })}>
         {props => (
           <SearchScreen
             {...props}
@@ -152,29 +179,29 @@ export default function App() {
 
   return (
     <>
-    {/* Set the StatusBar color based on the theme */}
-    <StatusBar
-      backgroundColor={isDarkTheme ? '#000000' : '#ffffff'}  
-      barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
-    />
-    <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenOptions={{
-          headerShown: false, // Hide the header for the splash screen
-        }}>
-        <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="MainApp">
-          {props => (
-            <DrawerNavigator
-              {...props}
-              toggleTheme={toggleTheme}
-              isDarkTheme={isDarkTheme}
-            />
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+      {/* Set the StatusBar color based on the theme */}
+      <StatusBar
+        backgroundColor={isDarkTheme ? '#000000' : '#ffffff'}
+        barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
+      />
+      <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
+        <Stack.Navigator
+          initialRouteName="Splash"
+          screenOptions={{
+            headerShown: false, // Hide the header for the splash screen
+          }}>
+          <Stack.Screen name="Splash" component={SplashScreen} />
+          <Stack.Screen name="MainApp">
+            {props => (
+              <DrawerNavigator
+                {...props}
+                toggleTheme={toggleTheme}
+                isDarkTheme={isDarkTheme}
+              />
+            )}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     </>
   );
 }

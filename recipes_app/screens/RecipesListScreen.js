@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, FlatList, Image, StyleSheet, Button } from 'react-native';
 import { TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'; // For the back icon
+import { getThemeColors } from '../components/Theme';
 
 // defining the recipes data for each category
 const recipes = {
@@ -167,9 +168,12 @@ const recipes = {
   ],
 };
 
-const RecipesListScreen = ({ route, navigation }) => {
+const RecipesListScreen = ({ route, navigation, isDarkTheme  }) => {
   const { categoryTitle } = route.params; // receive the category title passed from CategoriesScreen
   const categoryRecipes = recipes[categoryTitle] || []; // get recipes based on the selected category
+
+  // Get theme colors based on dark mode
+  const { backgroundColor, textColor, cardBackgroundColor, cardBorderColor } = getThemeColors(isDarkTheme);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -182,15 +186,15 @@ const RecipesListScreen = ({ route, navigation }) => {
   }, [navigation]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <FlatList
         data={categoryRecipes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.recipeCard}>
+          <View style={[styles.recipeCard, { backgroundColor: cardBackgroundColor, borderColor: cardBorderColor }]}>
             <Image source={item.image} style={styles.image} />
             <View style={styles.recipeInfo}>
-              <Text style={styles.recipeName}>{item.name}</Text>
+              <Text style={[styles.recipeName, { color: textColor }]}>{item.name}</Text>
               {/*show details link to recipe details screen in the bottom-right */}
               <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipeName: item.name })}>
                 <Text style={styles.showDetails}>Show Details</Text>
@@ -207,14 +211,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
   },
   recipeCard: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 15,
     borderWidth: 1,
-    borderColor: '#ddd',
     padding: 10,
     borderRadius: 10,
   },

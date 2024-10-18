@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, FlatList, StyleSheet } from 'react-native';
 import CategoryCard from '../components/CategoryCard'; 
+import { getThemeColors } from '../components/Theme'; 
 
 const categories = [
   {
@@ -35,14 +36,15 @@ const categories = [
   },
 ];
 
-const CategoriesScreen = ({ navigation }) => {
+const CategoriesScreen = ({ navigation, isDarkTheme }) => {
+  const { backgroundColor, textColor,cardBackgroundColor,cardBorderColor } = getThemeColors(isDarkTheme);
   const handlePress = (categoryTitle) => {
     // navigate to RecipesListScreen and pass the selected category title
     navigation.navigate('RecipesList', { categoryTitle });
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor }]}>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}
@@ -51,6 +53,9 @@ const CategoriesScreen = ({ navigation }) => {
             title={item.title}
             image={item.image}
             recipes={item.recipes}
+            textColor={textColor}
+            backgroundColor={cardBackgroundColor}
+            borderColor={cardBorderColor}
             onPress={() => handlePress(item.title)}
           />
         )}
