@@ -1,73 +1,60 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native';
+import LottieView from 'lottie-react-native';  // Import Lottie
 
 const HomeScreen = ({ navigation }) => {
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Logo Image above the title */}
-      <Image 
-        source={require('../assets/home.jpg')} 
-        style={styles.logo}
-      />
-      
-      <Text style={styles.title}>Welcome to Recipe App</Text>
-      <Text style={styles.subtitle}>Find and Share Recipes</Text>
+    <View style={{ flex: 1, marginTop: 0 }}>
+      {/* StatusBar configuration to remove extra space */}
+      <StatusBar hidden={true} />
 
-      {/* Dishes section with salmon and chocolate cake */}
-      <View style={styles.dishContainer}>
-        <View style={styles.dishBox}>
-          <Image 
-            source={require('../assets/salmon.jpg')} // Adjust the path based on your project structure
-            style={styles.dishImage}
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Logo Image above the title */}
+        <Image 
+          source={require('../assets/home.jpg')} 
+          style={styles.logo}
+        />
+        
+        <Text style={styles.title}>Welcome to YumPlate</Text>
+        <Text style={styles.subtitle}>Find and Share Recipes</Text>
+
+        {/* Navigation Buttons */}
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('Categories')}
+        >
+          <Text style={styles.buttonText}>Go to Categories</Text>
+        </TouchableOpacity>
+
+        {/* Amazing Animation */}
+        <View style={styles.animationContainer}>
+          <LottieView 
+            source={require('../assets/animation/animation.json')} 
+            autoPlay 
+            loop 
+            style={styles.animation}
           />
-          <Text style={styles.dishCategory}>Main Dish</Text>
-          <Text style={styles.dishTitle}>Salmon</Text>
         </View>
-
-        <View style={styles.dishBox}>
-          <Image 
-            source={require('../assets/chocolate_cake.jpg')} // Adjust the path based on your project structure
-            style={styles.dishImage}
-          />
-          <Text style={styles.dishCategory}>Dessert</Text>
-          <Text style={styles.dishTitle}>Chocolate Cake</Text>
-        </View>
-      </View>
-
-      {/* Navigation Buttons */}
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => navigation.navigate('Categories')}
-      >
-        <Text style={styles.buttonText}>Go to Categories</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity 
-        style={styles.button} 
-        onPress={() => navigation.navigate('Search')}
-      >
-        <Text style={styles.buttonText}>Search Recipes</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flex: 1,           // Ensures it takes the full height of the screen
-  },
   container: {
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 0,     // Remove any padding from the top
+    paddingTop: 0,  // Ensure no padding at the top
     backgroundColor: '#f5f5f5',
+    flexGrow: 1,    // Ensure the ScrollView takes up full space
   },
   logo: {
     width: 400,
-    height: 300,
+    height: 211,
     marginBottom: 10,
     resizeMode: 'contain',
-    marginTop: 0,      // Ensure no margin at the top of the image
+    marginTop: 0,   // Remove top margin
   },
   title: {
     fontSize: 28,
@@ -81,31 +68,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  dishContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  dishBox: {
-    alignItems: 'center',
-    width: 150,
-    marginHorizontal: 10,
-  },
-  dishImage: {
-    width: 120,
-    height: 120,
-    borderRadius: 10,
-    marginBottom: 5,
-  },
-  dishCategory: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#555',
-  },
-  dishTitle: {
-    fontSize: 12,
-    color: '#333',
-  },
+
   button: {
     backgroundColor: '#4CAF50',
     paddingVertical: 15,
@@ -119,6 +82,16 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
+  },
+
+  animationContainer: {
+    width: '100%',
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  animation: {
+    width: 300,
+    height: 250,
   },
 });
 
