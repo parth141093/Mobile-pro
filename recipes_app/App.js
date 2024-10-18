@@ -8,6 +8,7 @@ import HomeScreen from './screens/HomeScreen';
 import CategoriesScreen from './screens/CategoriesScreen';
 import SearchScreen from './screens/SearchScreen';
 import SplashScreen from './screens/SplashScreen';
+import RecipesListScreen from './screens/RecipesListScreen'; // Import RecipesListScreen
 import CustomDrawerContent from './components/CustomDrawerContent'; // Import your custom drawer component
 import SettingsScreen from './screens/SettingsScreen';
 import {enableScreens} from 'react-native-screens';

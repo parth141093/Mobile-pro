@@ -1,17 +1,59 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, FlatList, StyleSheet } from 'react-native';
+import CategoryCard from '../components/CategoryCard'; 
+
+const categories = [
+  {
+    id: '1',
+    title: 'Desserts',
+    image: require('../assets/desserts_categorie.png'), 
+    recipes: 3,
+  },
+  {
+    id: '2',
+    title: 'Lunch',
+    image: require('../assets/lunch_categorie.png'), 
+    recipes: 12,
+  },
+  {
+    id: '3',
+    title: 'Vegan',
+    image: require('../assets/vegan_categories.png'), 
+    recipes: 7,
+  },
+  {
+    id: '4',
+    title: 'Drinks',
+    image: require('../assets/drinks_categories.png'),
+    recipes: 2,
+  },
+  {
+    id: '5',
+    title: 'Smoothies',
+    image: require('../assets/smoothies_categories.png'), 
+    recipes: 5,
+  },
+];
 
 const CategoriesScreen = ({ navigation }) => {
+  const handlePress = (categoryTitle) => {
+    // navigate to RecipesListScreen and pass the selected category title
+    navigation.navigate('RecipesList', { categoryTitle });
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Categories</Text>
-      <Button
-        title="Italian Food"
-        onPress={() => navigation.navigate('RecipeDetails', { category: 'Italian' })}
-      />
-      <Button
-        title="Vegan Food"
-        onPress={() => navigation.navigate('RecipeDetails', { category: 'Vegan' })}
+      <FlatList
+        data={categories}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <CategoryCard
+            title={item.title}
+            image={item.image}
+            recipes={item.recipes}
+            onPress={() => handlePress(item.title)}
+          />
+        )}
       />
     </View>
   );
@@ -20,12 +62,8 @@ const CategoriesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    padding: 20,
+    backgroundColor: '#fff',
   },
 });
 
