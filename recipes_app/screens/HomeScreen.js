@@ -1,29 +1,33 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, StatusBar } from 'react-native';
 import LottieView from 'lottie-react-native';  // Import Lottie
+import { getThemeColors } from '../components/Theme';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, isDarkTheme }) => {
+  // Get colors based on dark mode
+  const { backgroundColor, textColor, buttonBackground, buttonTextColor } = getThemeColors(isDarkTheme);
+
   return (
-    <View style={{ flex: 1, marginTop: 0 }}>
+    <View style={{ flex: 1, marginTop: 0, backgroundColor }}>
       {/* StatusBar configuration to remove extra space */}
-      <StatusBar hidden={true} />
+      <StatusBar hidden={false} />
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView contentContainerStyle={[styles.container, { backgroundColor }]}>
         {/* Logo Image above the title */}
         <Image 
           source={require('../assets/home.jpg')} 
           style={styles.logo}
         />
         
-        <Text style={styles.title}>Welcome to YumPlate</Text>
-        <Text style={styles.subtitle}>Find and Share Recipes</Text>
+        <Text style={[styles.title, { color: textColor }]}>Welcome to YumPlate</Text>
+        <Text style={[styles.subtitle, { color: textColor }]}>Find and Share Recipes</Text>
 
         {/* Navigation Buttons */}
         <TouchableOpacity 
-          style={styles.button} 
+          style={[styles.button, { backgroundColor: buttonBackground }]} 
           onPress={() => navigation.navigate('Categories')}
         >
-          <Text style={styles.buttonText}>Go to Categories</Text>
+          <Text style={[styles.buttonText, { color: buttonTextColor }]}>Go to Categories</Text>
         </TouchableOpacity>
 
         {/* Amazing Animation */}
@@ -46,7 +50,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 0,  // Ensure no padding at the top
-    backgroundColor: '#f5f5f5',
     flexGrow: 1,    // Ensure the ScrollView takes up full space
   },
   logo: {
@@ -59,18 +62,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#555',
     marginBottom: 20,
     textAlign: 'center',
   },
 
   button: {
-    backgroundColor: '#4CAF50',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 8,
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
     fontSize: 16,
     fontWeight: '600',
   },
