@@ -23,10 +23,10 @@ export const DbProvider = ({ children }) => {
         },
         () => {
           console.log('Database opened successfully');
-          createTablesIfNotExistAndInsertData(database);
+          // createTablesIfNotExistAndInsertData(database);
 
           // Uncomment to drop and recreate tables each time
-          // deleteAndCreateTablesAndInsertData(database);
+          deleteAndCreateTablesAndInsertData(database);
         },
         error => {
           console.log('Error opening database: ', error);
