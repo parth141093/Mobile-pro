@@ -33,23 +33,27 @@ const RecipeDetailsScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Image source={{ uri: details.image }} style={styles.image} />
+      <Image source={{ uri: details.image }} style={styles.image} resizeMode="cover" />
       <Text style={styles.title}>{details.name}</Text>
-      <Text style={styles.details}>Total Time: {details.total_time} mins</Text>
-      <Text style={styles.details}>Serves: {details.serves}</Text>
-      <Text style={styles.details}>Vegetarian: {details.is_vegetarian ? 'Yes' : 'No'}</Text>
-      <Text style={styles.details}>Vegan: {details.is_vegan ? 'Yes' : 'No'}</Text>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.details}>Total Time: {details.total_time} mins</Text>
+        <Text style={styles.details}>Serves: {details.serves}</Text>
+      </View>
+      <View style={styles.detailsContainer}>
+        <Text style={styles.details}>Vegetarian: {details.is_vegetarian ? 'Yes' : 'No'}</Text>
+        <Text style={styles.details}>Vegan: {details.is_vegan ? 'Yes' : 'No'}</Text>
+      </View>
       {/* Display other recipe details */}
       <Text style={styles.sectionTitle}>Ingredients:</Text>
       <View style={styles.ingredientsContainer}>
         {details.ingredients.map((ingredient, index) => (
-          <Text key={index} style={styles.details}>- {ingredient}</Text> // List of ingredients
+          <Text key={index} style={styles.ingredientText}>- {ingredient}</Text> // List of ingredients
         ))}
       </View>
       <Text style={styles.sectionTitle}>Preparation:</Text>
       <View style={styles.ingredientsContainer}>
-        {details.directions.map((directions, index) => (
-          <Text key={index} style={styles.details}>- {directions}</Text> // List of ingredients
+        {details.directions.map((direction, index) => (
+          <Text key={index} style={styles.descriptionText}>- {direction}</Text> // List of preparation steps
         ))}
       </View>
     </ScrollView>
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   image: {
-    width: '100%',
+    width: 350,
     height: 200,
     borderRadius: 10,
     marginBottom: 20,
@@ -71,18 +75,36 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    textAlign: 'center', // Center the title
+    marginBottom: 10,
+  },
+  detailsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: 20,
+  },
+  details: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#000', // Set color to black
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     marginBottom: 10,
     marginTop: 20,
+    color: 'orange', // Change color to orange for section titles
   },
-  details: {
+  ingredientsContainer: {
+    marginBottom: 20,
+  },
+  ingredientText: {
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 20,
+  },
+  descriptionText: {
+    fontSize: 16,
+    lineHeight: 24,
   },
 });
 

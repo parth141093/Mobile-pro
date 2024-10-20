@@ -1,4 +1,3 @@
-// App.js
 import 'react-native-gesture-handler';
 import React, { useState } from 'react';
 import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
@@ -9,8 +8,8 @@ import HomeScreen from './screens/HomeScreen';
 import CategoriesScreen from './screens/CategoriesScreen';
 import SearchScreen from './screens/SearchScreen';
 import SplashScreen from './screens/SplashScreen';
-import RecipesListScreen from './screens/RecipesListScreen'; 
-import RecipeDetailsScreen from './screens/RecipeDetailsScreen'; 
+import RecipesListScreen from './screens/RecipesListScreen';
+import RecipeDetailsScreen from './screens/RecipeDetailsScreen';
 import CustomDrawerContent from './components/CustomDrawerContent';
 import SettingsScreen from './screens/SettingsScreen';
 import { enableScreens } from 'react-native-screens';
@@ -22,7 +21,8 @@ enableScreens();
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
-function DrawerNavigator({ isDarkTheme, setIsDarkTheme }) {
+// Reintroduce the toggleTheme prop to handle dark mode
+function DrawerNavigator({ toggleTheme, isDarkTheme }) {
   return (
     <Drawer.Navigator
       drawerContent={(props) => <CustomDrawerContent {...props} isDarkTheme={isDarkTheme} />}
@@ -41,17 +41,8 @@ function DrawerNavigator({ isDarkTheme, setIsDarkTheme }) {
           }
           return <Icon name={iconName} size={size} color={focused ? '#4CAF50' : '#000'} />;
         },
-        headerRight: () => (
-          <TouchableOpacity
-            onPress={() => {
-              setIsDarkTheme(prev => !prev);
-            }}
-            style={{ marginRight: 15 }}
-          >
-            <Icon name={isDarkTheme ? 'sunny-outline' : 'moon-outline'} size={25} color="#4CAF50" />
-          </TouchableOpacity>
-        ),
-      })}>
+      })}
+    >
       <Drawer.Screen
         name="Home"
         options={({ navigation }) => ({
@@ -66,40 +57,68 @@ function DrawerNavigator({ isDarkTheme, setIsDarkTheme }) {
       />
       <Drawer.Screen
         name="Categories"
-        options={({ navigation }) => ({
+        options={({navigation}) => ({
           title: 'Categories',
+          // Added a button to navigate back to the Home screen from the Categories screen
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Icon name="arrow-back-outline" size={25} color="#4CAF50" style={{ marginLeft: 15 }} />
+              <Icon
+                name="arrow-back-outline"
+                size={25}
+                color="#4CAF50"
+                style={{marginLeft: 15}}
+              />
             </TouchableOpacity>
           ),
-        })}
-        component={CategoriesScreen}
-      />
+        })}>
+        {props => (
+          <CategoriesScreen
+            {...props}
+            isDarkTheme={isDarkTheme} // Pass the dark mode state here
+          />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen
         name="RecipesList"
-        options={({ navigation }) => ({
+        options={({navigation}) => ({
           title: 'Recipes List',
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Icon name="arrow-back-outline" size={25} color="#4CAF50" style={{ marginLeft: 15 }} />
+              <Icon
+                name="arrow-back-outline"
+                size={25}
+                color="#4CAF50"
+                style={{marginLeft: 15}}
+              />
             </TouchableOpacity>
           ),
         })}
-        component={RecipesListScreen} 
-      />
+      >
+      {props => (
+          <RecipesListScreen
+            {...props}
+            isDarkTheme={isDarkTheme} // Pass the dark mode state here
+          />
+        )}
+      </Drawer.Screen>
       <Drawer.Screen
         name="RecipeDetails"
         options={({ navigation }) => ({
-          title: 'Recipes Details',
+          title: 'Recipe Details',
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.navigate('Home')}>
               <Icon name="arrow-back-outline" size={25} color="#4CAF50" style={{ marginLeft: 15 }} />
             </TouchableOpacity>
           ),
         })}
-        component={RecipeDetailsScreen} 
-      />
+        >
+        {props => (
+          <RecipeDetailsScreen
+            {...props}
+            isDarkTheme={isDarkTheme} // Pass the dark mode state here
+          />
+        )}
+        </Drawer.Screen>
       <Drawer.Screen
         name="Search"
         options={({ navigation }) => ({
@@ -122,7 +141,8 @@ function DrawerNavigator({ isDarkTheme, setIsDarkTheme }) {
             </TouchableOpacity>
           ),
         })}
-        component={SettingsScreen}
+        // Pass the toggleTheme and isDarkTheme props to SettingsScreen
+        children={() => <SettingsScreen isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />}
       />
     </Drawer.Navigator>
   );
@@ -132,9 +152,15 @@ export default function App() {
   const systemTheme = useColorScheme();
   const [isDarkTheme, setIsDarkTheme] = useState(systemTheme === 'dark');
 
+  // Use toggleTheme function as in the old code
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
+
   return (
     <DbProvider>
       <>
+        {/* Set the StatusBar color based on the theme */}
         <StatusBar
           backgroundColor={isDarkTheme ? '#000000' : '#ffffff'}
           barStyle={isDarkTheme ? 'light-content' : 'dark-content'}
@@ -142,11 +168,11 @@ export default function App() {
         <NavigationContainer theme={isDarkTheme ? DarkTheme : DefaultTheme}>
           <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Splash" component={SplashScreen} />
-            <Stack.Screen 
-              name="MainApp" 
-              children={() => <DrawerNavigator isDarkTheme={isDarkTheme} setIsDarkTheme={setIsDarkTheme} />} 
+            <Stack.Screen
+              name="MainApp"
+              children={() => <DrawerNavigator isDarkTheme={isDarkTheme} toggleTheme={toggleTheme} />}
             />
-            <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} /> 
+            <Stack.Screen name="RecipeDetails" component={RecipeDetailsScreen} />
           </Stack.Navigator>
         </NavigationContainer>
       </>
