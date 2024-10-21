@@ -1,13 +1,15 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
-import { getThemeColors } from '../components/Theme'; 
+import { getThemeColors } from '../components/Theme'; // Import function to get colors based on the current theme
 
 
 const SettingsScreen = ({ toggleTheme, isDarkTheme }) => {
-    const { backgroundColor, textColor, subtitleColor } = getThemeColors(isDarkTheme);
+   // Get the text color based on whether dark mode is enabled or not
+    const { textColor } = getThemeColors(isDarkTheme);
     return (
     <View style={styles.container}>
       <Text style={[styles.text, { color: textColor }]}>Dark Mode</Text>
+      {/* Switch to toggle between dark and light mode */}
       <Switch
         value={isDarkTheme}
         onValueChange={toggleTheme}

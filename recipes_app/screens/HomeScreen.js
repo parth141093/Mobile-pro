@@ -30,6 +30,14 @@ const HomeScreen = ({ navigation, isDarkTheme }) => {
           <Text style={[styles.buttonText, { color: buttonTextColor }]}>Go to Categories</Text>
         </TouchableOpacity>
 
+         {/* New Button to Navigate to AddRecipeScreen */}
+         <TouchableOpacity 
+          style={[styles.button, { backgroundColor: buttonBackground }]} 
+          onPress={() => navigation.navigate('AddRecipe')}
+        >
+          <Text style={[styles.buttonText, { color: buttonTextColor }]}>Add a Recipe</Text>
+        </TouchableOpacity>
+
         {/* Amazing Animation */}
         <View style={styles.animationContainer}>
           <LottieView 
@@ -49,15 +57,15 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     paddingHorizontal: 20,
-    paddingTop: 0,  // Ensure no padding at the top
-    flexGrow: 1,    // Ensure the ScrollView takes up full space
+    paddingTop: 0,  
+    flexGrow: 1,    
   },
   logo: {
     width: 400,
     height: 211,
     marginBottom: 10,
     resizeMode: 'contain',
-    marginTop: 0,   // Remove top margin
+    marginTop: 0,   
   },
   title: {
     fontSize: 28,

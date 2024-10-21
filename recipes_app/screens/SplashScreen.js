@@ -16,7 +16,7 @@ const SplashScreen = ({navigation}) => {
 
         //Navigate to HomeScreen after the animation completes
         const time = setTimeout(() => {
-            navigation.replace('MainApp'); //Navigate to MainApp (DrawerNavigator)
+            navigation.replace('Login'); //Navigate to Login 
         }, 3000);
         return () => clearTimeout(time);
     }, [navigation]);

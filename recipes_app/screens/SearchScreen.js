@@ -1,89 +1,76 @@
-import React, {useState} from 'react';
-import { View, TextInput, Text, StyleSheet,FlatList,TouchableOpacity,Image } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, Text, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
 import { getThemeColors } from '../components/Theme'; 
-import { categories } from '../data/categories';
-import { recipes } from '../data/recipes'; 
+import { getAllRecipes } from '../database/database';  
 
-
-const SearchScreen = ({navigation , isDarkTheme }) => {
+const SearchScreen = ({ navigation, isDarkTheme }) => {
   const { backgroundColor, textColor, subtitleColor } = getThemeColors(isDarkTheme);
   const [searchTerm, setSearchTerm] = useState(''); 
   const [filteredResults, setFilteredResults] = useState([]);
+  const [recipes, setRecipes] = useState([]);
 
- // Handle search input
- const handleSearch = (text) => {
-  setSearchTerm(text);
+  // Fetch all recipes when the screen loads
+  useEffect(() => {
+    getAllRecipes((fetchedRecipes) => {
+      setRecipes(fetchedRecipes);
+    });
+  }, []);
 
-  if (text.length > 0) {
-    const lowercasedText = text.toLowerCase();
+  // Handle search input
+  const handleSearch = (text) => {
+    setSearchTerm(text);
 
-    // Filter categories by title
-    const filteredCategories = categories.filter(category =>
-      category.title.toLowerCase().includes(lowercasedText)
-    );
+    if (text.length > 0) {
+      const lowercasedText = text.toLowerCase();
 
-    // Filter recipes by name
-    const filteredRecipes = recipes.filter(recipe =>
-      recipe.name.toLowerCase().includes(lowercasedText)
-    );
+      // Filter recipes by name, category, or user
+      const filteredRecipes = recipes.filter(recipe =>
+        recipe.title.toLowerCase().includes(lowercasedText) ||
+        recipe.category.toLowerCase().includes(lowercasedText) ||
+        recipe.username && recipe.username.toLowerCase().includes(lowercasedText)  
+      );
 
-    // Combine both category and recipe results
-    setFilteredResults([...filteredCategories, ...filteredRecipes]);
-  } else {
-    setFilteredResults([]); // Clear results if no input
-  }
-};
+      // Update the filtered results
+      setFilteredResults(filteredRecipes);
+    } else {
+      setFilteredResults([]); // Clear results if no input
+    }
+  };
 
-const keyExtractor = (item) => {
-  if (item.title) {
-    // If it's a category, return a unique key combining ID and title
-    return item.id + item.title;
-  } else {
-    // If it's a recipe, return a unique key combining ID and name
-    return item.id + item.name;
-  }
-};
+  const keyExtractor = (item) => item.id.toString();  // Use recipe ID as the key
 
- // Render each search result item
- const renderItem = ({ item }) => {
-  const isCategory = item.title !== undefined; // Check if the item is a category
-
-  return (
+  // Render each search result item
+  const renderItem = ({ item }) => (
     <TouchableOpacity
-      onPress={() => {
-        if (isCategory) {
-          // If it's a category, navigate to RecipesList with the category title
-          navigation.navigate('RecipesList', { categoryTitle: item.title });
-        } else {
-          // If it's a recipe, navigate to RecipeDetails with the recipe name
-          navigation.navigate('RecipeDetails', { recipeName: item.name });
-        }
-      }}
+      onPress={() => navigation.navigate('RecipeDetails', { recipeName: item.title })}
     >
       <View style={styles.resultItem}>
-        {/* Display the image for categories or recipes */}
-        {item.image && <Image source={item.image} style={styles.image} />}
+        {/* Display the recipe image */}
+        {item.imageUri ? <Image source={{ uri: item.imageUri }} style={styles.image} /> : null}
         <View style={styles.textContainer}>
-          <Text style={[styles.text, { color: textColor }]}>{isCategory ? item.title : item.name}</Text>
+          <Text style={[styles.text, { color: textColor }]}>{item.title}</Text>
           <Text style={{ color: subtitleColor }}>
-            {isCategory ? 'Category' : item.category}
+            {item.category}
+          </Text>
+          <Text style={{ color: subtitleColor }}>
+               Added by: {item.username}
           </Text>
         </View>
       </View>
     </TouchableOpacity>
   );
-};
+
   return (
     <View style={[styles.container, { backgroundColor }]}>
       <TextInput
         style={[styles.input, { color: textColor, borderColor: subtitleColor }]}
-        placeholder="Search by recipe or category..."
+        placeholder="Search by recipe, category, or user..."
         placeholderTextColor={subtitleColor}
         value={searchTerm}
         onChangeText={handleSearch}
       />
       <Text style={[styles.title, { color: textColor }]}>Search Results</Text>
-      {/* Display search results here */}
+      {/* Display search results */}
       <FlatList
         data={filteredResults}
         keyExtractor={keyExtractor}

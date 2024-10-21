@@ -1,208 +1,67 @@
-import React from 'react';
-import { View, Text, FlatList, Image, StyleSheet, Button } from 'react-native';
-import { TouchableOpacity } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons'; // For the back icon
+import React, { useEffect, useState } from 'react';
+import { View, FlatList, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
+import { getRecipesByCategory } from '../database/database'; 
 import { getThemeColors } from '../components/Theme';
 
-// defining the recipes data for each category
-const recipes = {
-  Desserts: [
-    {
-      id: '1',
-      name: 'Banana Splits',
-      image: require('../assets/banana_splits.png'),
-    },
-    {
-      id: '2',
-      name: 'Halloween Ghost Cupcakes',
-      image: require('../assets/halloween_ghost_cupcakes.png'),
-    },
-    {
-      id: '3',
-      name: 'Banana Pancakes',
-      image: require('../assets/healthier_banana.png'),
-    },
-  ],
-  Lunch: [
-    {
-      id: '1',
-      name: 'Pumpkin Ricotta Toast With Hot Honey',
-      image: require('../assets/PumpkinRicottaToastsWithHotHoney_1.png'),
-    },
-    {
-      id: '2',
-      name: 'Bacon Spinach',
-      image: require('../assets/bacon_spinach.png'),
-    },
-    {
-      id: '3',
-      name: 'Bacon&Mushroom',
-      image: require('../assets/BaconMushroomBreakfastHash_1.png'),
-    },
-    {
-      id: '4',
-      name: 'Cheat`s Courgette Dhal',
-      image: require('../assets/CheatsCourgetteDhal_1.png'),
-    },
-    {
-      id: '5',
-      name: 'Curried red lentil soup',
-      image: require('../assets/curried_red_lentil_soup.png'),
-    },
-    {
-      id: '6',
-      name: 'Falafel Wraps',
-      image: require('../assets/falafel_wraps.png'),
-    },
-    {
-      id: '7',
-      name: 'Halloumi Salad',
-      image: require('../assets/halloumi_salad.png'),
-    },
-    {
-      id: '8',
-      name: 'Korean Turkey Bowl',
-      image: require('../assets/korean_turkey_bowl.png'),
-    },
-    {
-      id: '9',
-      name: 'Lemon Blueberry French Toast',
-      image: require('../assets/LemonBlueberryFrenchToast_1.png'),
-    },
-    {
-      id: '10',
-      name: 'Paneer Traybake',
-      image: require('../assets/PaneerTraybake_1.png'),
-    },
-    {
-      id: '11',
-      name: 'Spinach Salad',
-      image: require('../assets/Spinach_Salad.png'),
-    },
-    {
-      id: '12',
-      name: 'Fish Finger Sarnie',
-      image: require('../assets/FishFingerSarnie_1.png'),
-    },
-    {
-      id: '13',
-      name: 'Turkish Eggs on Toast',
-      image: require('../assets/Turkish-eggs-on-toast_1.png'),
-    }
-  ],
-  Vegan: [
-    {
-      id: '1',
-      name: 'Creamy Vegan Pasta',
-      image: require('../assets/Creamy-cauliflower-pasta_Vegan_1.png'),
-    },
-    {
-      id: '2',
-      name: 'Vegan Burrito',
-      image: require('../assets/VEGAN-BURRITO_1.png'),
-    },
-    {
-      id: '3',
-      name: 'Vegan Noodles',
-      image: require('../assets/Veggienoodlestir_1.png'),
-    },
-    {
-      id: '4',
-      name: 'Vegan Victoria Sponge',
-      image: require('../assets/vegan-egg-free-victoria-sponge_1.png'),
-    },
-    {
-      id: '5',
-      name: 'Dark Chocolate Fondants',
-      image: require('../assets/VeganDarkChocolateFondants_1.png'),
-    },
-    {
-      id: '6',
-      name: 'Vegan Truffles',
-      image: require('../assets/Truffles-Vegan_1.png'),
-    },
-    {
-      id: '7',
-      name: 'Vegan Chip Cookies',
-      image: require('../assets/vegan_chocolate_cookies.png'),
-    }
-  ],
-  Drinks: [
-    {
-      id: '1',
-      name: 'Bubble Tea',
-      image: require('../assets/bubble_tea.png'),
-    },
-    {
-      id: '2',
-      name: 'Strawberry Lemonade',
-      image: require('../assets/Strawberry_Lemonade.png'),
-    },
-  ],
-  Smoothies: [
-    {
-      id: '1',
-      name: 'Banana Smoothie',
-      image: require('../assets/banana_smoothie.png'),
-    },
-    {
-      id: '2',
-      name: 'Passion Fruit Smoothie',
-      image: require('../assets/GreenPassionfruitSmoothies_1.png'),
-    },
-    {
-      id: '3',
-      name: 'Kale Smoothie',
-      image: require('../assets/kale_smoothie.png'),
-    },
-    {
-      id: '4',
-      name: 'Mango Smoothie',
-      image: require('../assets/mangosmoothie.png'),
-    },
-    {
-      id: '5',
-      name: 'Pineapple&Coconut Smoothie',
-      image: require('../assets/pineapple_and_coconut_smoothie_1.png'),
-    },
-  ],
-};
+const RecipesListScreen = ({ route, navigation,isDarkTheme }) => {
+  const { categoryTitle } = route.params;
+  const [recipes, setRecipes] = useState([]);
 
-const RecipesListScreen = ({ route, navigation, isDarkTheme  }) => {
-  const { categoryTitle } = route.params; // receive the category title passed from CategoriesScreen
-  const categoryRecipes = recipes[categoryTitle] || []; // get recipes based on the selected category
+  // Get theme colors based on the current theme
+  const {
+    backgroundColor,    
+    textColor,          
+    subtitleColor,
+    cardBackgroundColor ,
+    cardBorderColor     
+  } = getThemeColors(isDarkTheme);
 
-  // Get theme colors based on dark mode
-  const { backgroundColor, textColor, cardBackgroundColor, cardBorderColor } = getThemeColors(isDarkTheme);
-
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back-outline" size={25} color="#4CAF50" style={{ marginLeft: 15 }} />
-        </TouchableOpacity>
-      ),
+  useEffect(() => {
+    // Fetch recipes for the selected category
+    getRecipesByCategory(categoryTitle, (dbRecipes) => {
+      setRecipes(dbRecipes); // Set the recipes for this category
     });
-  }, [navigation]);
+  }, [categoryTitle]);
+
+  const navigateToRecipeDetails = (recipe) => {
+    navigation.navigate('RecipeDetailScreen', { recipe });
+  };
 
   return (
     <View style={[styles.container, { backgroundColor }]}>
-      <FlatList
-        data={categoryRecipes}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={[styles.recipeCard, { backgroundColor: cardBackgroundColor, borderColor: cardBorderColor }]}>
-            <Image source={item.image} style={styles.image} />
-            <View style={styles.recipeInfo}>
-              <Text style={[styles.recipeName, { color: textColor }]}>{item.name}</Text>
-              {/*show details link to recipe details screen in the bottom-right */}
-              <TouchableOpacity onPress={() => navigation.navigate('RecipeDetails', { recipeName: item.name })}>
-                <Text style={styles.showDetails}>Show Details</Text>
-              </TouchableOpacity>
+      <Text style={[styles.header, { color: textColor }]}>Recipes in {categoryTitle}</Text>
+      {recipes.length > 0 ? (
+        <FlatList
+          data={recipes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.recipeCard, { backgroundColor: cardBackgroundColor, borderColor: cardBorderColor }]}>
+              {/* Display the recipe image */}
+              {item.imageUri ? (
+                <Image source={{ uri: item.imageUri }} style={styles.image} />
+              ) : (
+                <Text style={{ color: textColor }}>No image available</Text>
+              )}
+
+              <View style={styles.recipeDetails}>
+                {/* Display the recipe title */}
+                <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+                <Text style={[styles.category, { color: subtitleColor }]}>{item.category}</Text>
+
+                {/* Display the user who added the recipe */}
+                <Text style={[styles.username, { color: subtitleColor }]}>Added by: {item.username}</Text>
+
+                {/* Show Details Button */}
+                <TouchableOpacity onPress={() => navigateToRecipeDetails(item)}>
+                  <Text style={[styles.showDetails, { color: '#4CAF50' }]}>Show Details</Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      ) : (
+        <Text style={[styles.noRecipesText, { color: textColor }]}>No recipes available for this category.</Text>
+      )}
     </View>
   );
 };
@@ -212,33 +71,53 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
   },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
   recipeCard: {
     flexDirection: 'row',
-    alignItems: 'center',
+    padding: 15,
     marginBottom: 15,
-    borderWidth: 1,
-    padding: 10,
-    borderRadius: 10,
+    borderRadius: 8,
+    elevation: 2,
+    alignItems: 'center',
+    borderWidth: 1, 
   },
   image: {
     width: 80,
     height: 80,
+    borderRadius: 8,
     marginRight: 15,
-    borderRadius: 5,
   },
-  recipeInfo: {
+  recipeDetails: {
     flex: 1,
+    justifyContent: 'space-between',
   },
-  recipeName: {
+  title: {
     fontSize: 18,
-    fontWeight: '500',
+    fontWeight: 'bold',
+  },
+  category: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  username: {
+    fontSize: 12,
+    marginBottom: 5,
   },
   showDetails: {
-    color: '#4CAF50', // green color for the link
+    fontWeight: 'bold',
     fontSize: 14,
-    alignSelf: 'flex-end', // align text to the bottom-right
-    marginTop: 10,
+    marginTop: 5,
+  },
+  noRecipesText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 16,
   },
 });
+
 
 export default RecipesListScreen;
