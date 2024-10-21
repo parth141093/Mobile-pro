@@ -332,7 +332,7 @@ export default function App() {
             {props => (
               <RecipeDetailScreen
                 {...props}
-                isDarkTheme={isDarkTheme} // Pass the dark mode state here
+                isDarkTheme={isDarkTheme} 
               />
             )}
           </Stack.Screen>
@@ -352,3 +352,4 @@ export default function App() {
     </>
   );
 }
+ 
